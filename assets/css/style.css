@@ -1,0 +1,91 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 02/12/2018, 12:52:06
+    Author     : andersonalves
+*/
+
+.dropdown-menu .dropdown-item:hover, .dropdown-menu .dropdown-item:focus, .dropdown-menu a:hover, .dropdown-menu a:focus, .dropdown-menu a:active{
+    background-color: #f44336 !important;
+}
+
+select{
+    font-family: 'Teko';
+    font-size: 26px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0 !important;
+    background-image: none;
+}
+
+.select{
+    position: relative;
+    display: block;
+    width: 400px;
+    height: 50px;
+    background: linear-gradient(60deg, #ab47bc, #8e24aa) !important;
+    overflow: hidden;
+    border-radius: .25em;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+select{
+    width: 100%;
+    height: 100%;
+    margin:0;
+    padding: 0 0 0 .5em;
+    /*color: #fff;*/
+    cursor: pointer;
+}
+
+select::ms-expand{
+    display: none;
+}
+
+.select::after{
+    content: '\25BC';
+    font-size: 14px;
+    position: absolute;
+    top:0;
+    right: 0;
+    bottom: 0;
+    padding: 15px;
+    background: #446cb2;
+    pointer-events: none;
+}
+.select:hover::after{
+    color:#7dd1b7;
+}
+.select::after{
+    transition: .25s all ease;
+}
+
+.fc-axis {
+    text-align: center !important;
+}
+
+.fc-axis td {
+    padding: 0;
+    vertical-align: middle !important;
+}
+.fc-day-number, .fc-list-heading-main, .fc-list-heading-alt{
+    color: #006B43;
+}
+.fc-state-hover {
+    background-position: 0px !important;
+}
+.fc-state-default{
+    background-repeat: inherit !important; 
+}
+
+.sidebar .sidebar-wrapper{
+    padding-bottom: 111px !important;
+}
