@@ -6,6 +6,7 @@ $("form").submit(function (e) {
         url: 'class/request.php',
         type: 'POST',
         data: formData,
+        dataType: 'json',
         cache: false,
         contentType: false,
         processData: false,
@@ -37,7 +38,14 @@ $("form").submit(function (e) {
                     clearInterval(refreshIntervalId);
                 }, 1500);
             } else if (data.status == 'error') {
-                alert("Algo aconteceu incorretamente!");
+                var pagina_atual = $("input#pagina_atual").val();
+                if (pagina_atual == "adicionarAdministrador" || pagina_atual == "gerenciarAdministrador") {
+                    swal(
+                        'Senhas não coincidem!',
+                        'Suas senhas não se correspondem.',
+                        'error'
+                    )
+                }
             }
         },
         error: function (data) {

@@ -62,3 +62,24 @@ var getCategoria = function (fn) {
         }
     });
 };
+
+var getProdutos = function (fn) {
+    $.post('class/request.php', {
+        action: 'get-produtos'
+    }, function (response) {
+        if (typeof fn === "function") {
+            fn(response);
+        }
+    });
+};
+
+/* Administradores */
+var getAdministrador = function (fn) {
+    $.post('class/request.php', {
+        action: 'get-administradores'
+    }, function (response) {
+        if (typeof fn === "function") {
+            fn(response);
+        }
+    });
+};

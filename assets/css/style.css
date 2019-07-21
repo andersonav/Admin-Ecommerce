@@ -89,3 +89,11 @@ select::ms-expand{
 .sidebar .sidebar-wrapper{
     padding-bottom: 111px !important;
 }
+
+#imagemProduto{
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+    display: block;
+    margin-bottom: 40px;
+}

@@ -61,7 +61,6 @@ switch ($action) {
         break;
     case 'editar-cliente':
         $response = array();
-        // Cadastro de clientes
         $id = $_POST['id'];
         $nome = $_POST['nome'];
         $email = $_POST['email'];
@@ -86,7 +85,6 @@ switch ($action) {
         break;
     case 'deletar-cliente':
         $response = array();
-        // Cadastro de clientes
         $id = $_POST['id'];
 
         $sql = "UPDATE usuario SET ativo=0 WHERE usuario_id=?";
@@ -136,6 +134,209 @@ switch ($action) {
         }
         $data['status'] = 'success';
         echo json_encode($data);
+        break;
+
+    case 'get-produtos':
+        $response = array();
+        $sql = "SELECT produto.*,categoria.nome as categoriaNome FROM produto INNER JOIN categoria ON categoria.categoria_id = produto.categoria_id_fk WHERE produto.ativo = 1 AND categoria.ativo = 1";
+        $get = $conn->prepare($sql);
+        $get->execute();
+        $response = $get->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($response);
+        break;
+
+    case 'editar-produto':
+        $response = array();
+        $id = $_POST['id'];
+        $nome = $_POST['nome'];
+        $categoriaId = $_POST['categoria'];
+        $quantidade = $_POST['quantidade'];
+        $valor = $_POST['valor'];
+        $descricao = $_POST['descricao'];
+
+        if ($_FILES['arquivo']['name'] == "") {
+            $sql = "UPDATE produto SET nome=?,descricao=?,valor=?,quantidade=?,categoria_id_fk=? WHERE produto_id=?";
+            $get = $conn->prepare($sql);
+
+            if ($get->execute(array($nome, $descricao, $valor, $quantidade, $categoriaId, $id))) {
+                $response['status'] = 'success';
+            } else {
+                $response['status'] = 'error';
+            }
+            echo json_encode($response);
+        } else {
+            $uploaddir = '../../ecommerceLaravel/public/img/images/';
+            $img =  "produtos/" . @date("YmdHis") . $_FILES['arquivo']['name'];
+            $upload = $uploaddir . $img;
+            if (move_uploaded_file($_FILES['arquivo']['tmp_name'], $upload)) {
+                $response[] = "Arquivo Enviado $img";
+            } else {
+                $response[] = "Erro ao enviar o arquivo";
+            }
+            $sql = "UPDATE produto SET nome=?,descricao=?,valor=?,quantidade=?,categoria_id_fk=?,imagem=? WHERE produto_id=?";
+            $get = $conn->prepare($sql);
+
+            if ($get->execute(array($nome, $descricao, $valor, $quantidade, $categoriaId, $img, $id))) {
+                $response['status'] = 'success';
+            } else {
+                $response['status'] = 'error';
+            }
+            echo json_encode($response);
+        }
+
+        break;
+
+    case 'deletar-produto':
+        $response = array();
+        $id = $_POST['id'];
+
+        $sql = "UPDATE produto SET ativo=0 WHERE produto_id=?";
+
+        $get = $conn->prepare($sql);
+
+        if ($get->execute(array($id))) {
+            $response['status'] = 'success';
+        } else {
+            $response['status'] = 'error';
+        }
+        echo json_encode($response);
+        break;
+
+        // ============================== CATEGORIAS ==============================
+    case 'adicionar-categoria':
+        $response = array();
+        try {
+            $nome = $_POST['nome'];
+            $sql = "INSERT INTO categoria (nome) VALUES (?)";
+            $get = $conn->prepare($sql);
+            $data['status'] = 'success';
+            $get->execute(array($nome));
+        } catch (Exception $ex) {
+            $data['status'] = 'error';
+            echo json_encode($data);
+            exit();
+        }
+        $data['status'] = 'success';
+        echo json_encode($data);
+        break;
+    case 'editar-categoria':
+        $response = array();
+        $id = $_POST['id'];
+        $nome = $_POST['nome'];
+
+        $sql = "UPDATE categoria SET nome=? WHERE categoria_id=?";
+
+        $get = $conn->prepare($sql);
+
+        if ($get->execute(array($nome, $id))) {
+            $response['status'] = 'success';
+        } else {
+            $response['status'] = 'error';
+        }
+        echo json_encode($response);
+        break;
+    case 'deletar-categoria':
+        $response = array();
+        $id = $_POST['id'];
+
+        $sql = "UPDATE categoria SET ativo=0 WHERE categoria_id=?";
+
+        $get = $conn->prepare($sql);
+
+        if ($get->execute(array($id))) {
+            $response['status'] = 'success';
+        } else {
+            $response['status'] = 'error';
+        }
+        echo json_encode($response);
+        break;
+
+        // ============================== ADMINISTRADORES ==============================
+    case 'get-administradores':
+        $response = array();
+        $sql = "SELECT * FROM administradores WHERE ativo = 1";
+        $get = $conn->prepare($sql);
+        $get->execute();
+        $response = $get->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($response);
+        break;
+    case 'adicionar-administrador':
+        $response = array();
+        try {
+            $nome = $_POST['nome'];
+            $email = $_POST['email'];
+            $senha = $_POST['senha'];
+            $confirmSenha = $_POST['confirmSenha'];
+            if ($senha != $confirmSenha) {
+                $data['status'] = 'error';
+                echo json_encode($data);
+            } else {
+                $senhaMd5 = md5($senha);
+                $sql = "INSERT INTO administradores (nome, email, password) VALUES (?,?,?)";
+                $get = $conn->prepare($sql);
+                $get->execute(array($nome, $email, $senhaMd5));
+                $data['status'] = 'success';
+                echo json_encode($data);
+            }
+        } catch (Exception $ex) {
+            $data['status'] = 'error';
+            echo json_encode($data);
+            exit();
+        }
+
+        break;
+    case 'editar-administrador':
+        $response = array();
+        $id = $_POST['id'];
+        $nome = $_POST['nome'];
+        $email = $_POST['email'];
+
+        $sql = "UPDATE administradores SET nome=?,email=? WHERE admin_id=?";
+
+        $get = $conn->prepare($sql);
+
+        if ($get->execute(array($nome, $email, $id))) {
+            $response['status'] = 'success';
+        } else {
+            $response['status'] = 'error';
+        }
+        echo json_encode($response);
+        break;
+    case 'editar-administrador-senha':
+        $response = array();
+        $id = $_POST['idToPass'];
+        $senha = $_POST['senha'];
+        $confirmSenha = $_POST['confirmSenha'];
+        if ($senha != $confirmSenha) {
+            $data['status'] = 'error';
+            echo json_encode($data);
+        } else {
+            $senhaMD5 = md5($senha);
+            $sql = "UPDATE administradores SET password=? WHERE admin_id=?";
+            $get = $conn->prepare($sql);
+            if ($get->execute(array($senhaMD5, $id))) {
+                $response['status'] = 'success';
+            } else {
+                $response['status'] = 'error';
+            }
+            echo json_encode($response);
+        }
+
+        break;
+    case 'deletar-administrador':
+        $response = array();
+        $id = $_POST['id'];
+
+        $sql = "UPDATE administradores SET ativo=0 WHERE admin_id=?";
+
+        $get = $conn->prepare($sql);
+
+        if ($get->execute(array($id))) {
+            $response['status'] = 'success';
+        } else {
+            $response['status'] = 'error';
+        }
+        echo json_encode($response);
         break;
 
 
