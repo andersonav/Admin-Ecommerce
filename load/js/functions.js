@@ -72,6 +72,16 @@ var getProdutos = function (fn) {
         }
     });
 };
+/* Vendas */
+var getVendas = function (fn) {
+    $.post('class/request.php', {
+        action: 'get-vendas'
+    }, function (response) {
+        if (typeof fn === "function") {
+            fn(response);
+        }
+    });
+};
 
 /* Administradores */
 var getAdministrador = function (fn) {
